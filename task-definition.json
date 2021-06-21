@@ -1,0 +1,59 @@
+{
+    "inferenceAccelerators": [],
+    "containerDefinitions": [
+        {
+            "name": "my-python",
+            "image": "ecs-devops-sandbox-repository:00000",
+            "resourceRequirements": null,
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": "8000",
+                    "protocol": "tcp"
+                }
+            ],
+            "dependsOn": [
+                {
+                    "containerName": "my-db",
+                    "condition": "HEALTHY"
+                }
+            ]
+        },
+        {
+            "name": "my-db",
+            "image": "ecs-devops-sandbox-repository:00000",
+            "resourceRequirements": null,
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": "5432",
+                    "protocol": "tcp"
+                }
+            ],
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "echo hello"
+                ]
+            },
+            "environment": [
+                {
+                  "name": "POSTGRES_USER",
+                  "value": "postgres"
+                },
+                {
+                  "name": "POSTGRES_PASSWORD",
+                  "value": "postgres"
+                }
+              ]
+        }
+    ],
+    "volumes": [],
+    "networkMode": "awsvpc",
+    "memory": "512",
+    "cpu": "256",
+    "executionRoleArn": "arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/ecs-devops-sandbox-execution-role",
+    "family": "ecs-devops-sandbox-task-definition",
+    "taskRoleArn": "",
+    "placementConstraints": []
+}
